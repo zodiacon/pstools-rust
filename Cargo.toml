@@ -1,0 +1,16 @@
+[package]
+name = "winplat"
+version = "0.1.0"
+authors = ["Pavel Yosifovich <zodiacon@live.com>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+winapi = "0.3.9"
+ntapi = "0.3.6"
+clap = "2.33.3"
+num-format = "0.4.0"
+
+[target.'cfg(windows)'.dependencies]
+winapi = { version = "0.3.9", features = ["winuser", "psapi", "winnt", "processthreadsapi", "errhandlingapi", "handleapi", "tlhelp32", "impl-default", "winbase"] }
