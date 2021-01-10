@@ -90,7 +90,7 @@ fn display_tree() -> Result<(), core::Win32Error> {
             if p.id == 0 {
                 continue;
             }
-            let children = find_children(&map, &processes, p.id, 1);
+            let children = find_children(&map, &processes, &p, 1);
             children.iter().for_each(|p| {
                 map.remove(&p.0);
                 tree.push((&map2[&p.0], p.1));
@@ -103,12 +103,12 @@ fn display_tree() -> Result<(), core::Win32Error> {
     Ok(())
 }
 
-fn find_children(map: &HashMap<u32, &ProcessInfoEx>, processes: &Vec<ProcessInfoEx>, pid: u32, indent: u32) -> Vec<(u32, u32)> {
+fn find_children(map: &HashMap<u32, &ProcessInfoEx>, processes: &Vec<ProcessInfoEx>, parent: &ProcessInfoEx, indent: u32) -> Vec<(u32, u32)> {
     let mut children = Vec::new();
     for p in processes.iter() {
-        if p.parent_id == pid {
+        if p.parent_id == parent.id && parent.create_time < p.create_time {
             children.push((p.id, indent));
-            let mut children2 = find_children(&map, &processes, p.id, indent + 1);
+            let mut children2 = find_children(&map, &processes, &p, indent + 1);
             children.append(&mut children2);
         }
     }
